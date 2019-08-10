@@ -1,0 +1,100 @@
+<project name="java_project_001" basedir="." default="junit-test" xmlns:ivy="antlib:org.apache.ivy.ant">
+  <!-- Project Settings and Variables -->
+  <property name="src.dir" location="src" />
+  <property name="build.dir" location="build" />
+  <property name="classes.dir" location="${build.dir}/classes" />
+  <property name="jars.dir" location="${build.dir}/jars" />
+  <property name="test.class.dir" location="${classes.dir}/test" />
+  <property name="docs.dir" location="docs" />
+
+  <!-- Classpath settings -->
+  <path id="classpath" description="Sets the classpath for Java">
+    <fileset dir="." />
+  </path>
+  <path id="classpath.test" description="Sets classpath for JUnit">
+    <pathelement location="lib/junit-4.12.jar" />
+    <pathelement location="lib/hamcrest-2.1.jar" />
+    <pathelement location="${classes.dir}" />
+  </path>
+
+  <!-- Apache Ant Project Targets -->
+  <target name="init" description="Setup the output directories">
+    <mkdir dir="${build.dir}" />
+  </target>
+
+  <target name="deps" description="Download specified dependencies">
+    <ivy:retrieve />
+  </target>
+
+  <target name="clean" description="Clean up the project folder">
+    <delete dir="${build.dir}" />
+    <delete dir="lib" />
+    <delete dir="target" />
+  </target>
+
+  <target name="compile" depends="init,deps" description="Compile the Java Project to class files">
+    <javac
+      includeantruntime="false"
+      srcdir="${src.dir}"
+      destdir="${classes.dir}" />
+  </target>
+
+  <target name="jar" depends="compile" description="Create an executable/library Java Jar">
+    <jar
+      destfile="${jars.dir}/${ant.project.name}.jar"
+      basedir="${classes.dir}">
+      <manifest>
+        <attribute name="Main-Class" value="${main-class}" />
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="docs" description="Generate JavaDoc for the project">
+    <javadoc sourcepath="${src.dir}" destdir="${docs.dir}" />
+  </target>
+
+  <target name="junit-compile" depends="compile" description="Compile JUnit Tests">
+    <mkdir dir="${test.class.dir}" />
+    <javac
+      includeantruntime="false"
+      srcdir="${src.dir}/test"
+      destdir="${test.class.dir}"
+      classpath="${test.class.dir}">
+      <classpath refid="classpath.test" />
+    </javac>
+  </target>
+
+  <target name="junit-test" depends="junit-compile" description="Run JUnit Tests">
+    <junit printonsummary="on" haltonfailure="yes" fork="true">
+      <classpath>
+        <path refid="classpath.test" />
+        <pathelement location="${classes.dir}" />
+        <pathelement location="${classes.dir}/test" />
+      </classpath>
+      <formatter type="brief" usefile="false" />
+      <batchtest>
+        <fileset dir="${src.dir}/test" includes="**/*Test.java" />
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="run-classes" depends="compile" description="Run the compiled Java Classes">
+    <java
+      fork="true"
+      classpath="${classes.dir}"
+      failonerror="yes"
+      dir="${classes.dir}"
+      classname="${main-class}" />
+  </target>
+
+  <target name="run-jars" depends="jar" description="Run the compiled Java Jars">
+    <java
+      fork="true"
+      classname="${main-class}">
+      <classpath>
+        <path refid="classpath" />
+        <path location="${jars.dir}/${ant.project.name}.jar" />
+      </classpath>
+    </java>
+  </target>
+</project>
