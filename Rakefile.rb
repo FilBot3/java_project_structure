@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+#
+# @see https://watchitlater.com/blog/2011/03/jruby-rake-vs-ant/
+# Most of this is stolen from the link above.
 
 require 'ant'
 
@@ -26,6 +29,25 @@ task :setup do
     fileset dir: RUNTIME_LIB_DIR
     fileset dir: BUILDTIME_LIB_DIR
   end
+end
+
+task :ant_import do
+  # this is supposed to load the Ant build.xml
+  # Can't tell if it is or not.
+  ant_import
+end
+
+task :run_ant do
+  # This works, and it invokes Ant and calls the build.xml
+  # unless I supply more command-line arguments to it.
+  ant 'deps'
+end
+
+task stuff: [:ant_import, :deps] do
+  # https://www.engineyard.com/blog/rake-and-ant-together-a-pick-it-n-stick-it-approach
+  # 
+  # Doesn't actually seem to work. Just looks at me stupid.
+  puts "things"
 end
 
 task make_jars: [:setup] do

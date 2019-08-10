@@ -2,6 +2,7 @@
   <!-- Project Settings and Variables -->
   <property name="src.dir"        location="src" />
   <property name="src.java.dir"   location="${src.dir}/main/java" />
+  <property name="src.test.dir"   location="${src.dir}/test/java" />
   <property name="build.dir"      location="build" />
   <property name="classes.dir"    location="${build.dir}/classes" />
   <property name="jars.dir"       location="${build.dir}/jars" />
@@ -77,7 +78,7 @@
       </classpath>
       <formatter type="brief" usefile="false" />
       <batchtest>
-        <fileset dir="${src.dir}/test" includes="**/*Test.java" />
+        <fileset dir="${src.test.dir}" includes="**/*Test.java" />
       </batchtest>
     </junit>
   </target>
