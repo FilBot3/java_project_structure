@@ -1,11 +1,13 @@
 <project name="java_project_001" basedir="." default="junit-test" xmlns:ivy="antlib:org.apache.ivy.ant">
   <!-- Project Settings and Variables -->
-  <property name="src.dir" location="src" />
-  <property name="build.dir" location="build" />
-  <property name="classes.dir" location="${build.dir}/classes" />
-  <property name="jars.dir" location="${build.dir}/jars" />
+  <property name="src.dir"        location="src" />
+  <property name="src.java.dir"   location="${src.dir}/main/java" />
+  <property name="build.dir"      location="build" />
+  <property name="classes.dir"    location="${build.dir}/classes" />
+  <property name="jars.dir"       location="${build.dir}/jars" />
   <property name="test.class.dir" location="${classes.dir}/test" />
-  <property name="docs.dir" location="docs" />
+  <property name="docs.dir"       location="docs" />
+  <property name="main-class"     location="hello.App" />
 
   <!-- Classpath settings -->
   <path id="classpath" description="Sets the classpath for Java">
@@ -30,9 +32,11 @@
     <delete dir="${build.dir}" />
     <delete dir="lib" />
     <delete dir="target" />
+    <delete dir="${docs.dir}" />
   </target>
 
   <target name="compile" depends="init,deps" description="Compile the Java Project to class files">
+    <mkdir dir="${classes.dir}" />
     <javac
       includeantruntime="false"
       srcdir="${src.dir}"
@@ -50,7 +54,7 @@
   </target>
 
   <target name="docs" description="Generate JavaDoc for the project">
-    <javadoc sourcepath="${src.dir}" destdir="${docs.dir}" />
+    <javadoc sourcepath="${src.java.dir}" destdir="${docs.dir}" />
   </target>
 
   <target name="junit-compile" depends="compile" description="Compile JUnit Tests">
