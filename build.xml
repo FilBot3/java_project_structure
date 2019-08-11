@@ -1,8 +1,8 @@
 <project name="java_project_001" basedir="." default="junit-test" xmlns:ivy="antlib:org.apache.ivy.ant">
   <!-- Project Settings and Variables -->
   <property name="src.dir"        location="src" />
-  <property name="src.java.dir"   location="${src.dir}/main/java" />
-  <property name="src.test.dir"   location="${src.dir}/test/java" />
+  <property name="src.main.java"   location="${src.dir}/main/java" />
+  <property name="src.test.java"   location="${src.dir}/test/java" />
   <property name="build.dir"      location="build" />
   <property name="classes.dir"    location="${build.dir}/classes" />
   <property name="jars.dir"       location="${build.dir}/jars" />
@@ -45,9 +45,8 @@
   </target>
 
   <target name="jar" depends="compile" description="Create an executable/library Java Jar">
-    <jar
-      destfile="${jars.dir}/${ant.project.name}.jar"
-      basedir="${classes.dir}">
+    <jar destfile="${jars.dir}/${ant.project.name}.jar">
+      <fileset dir="build/classes" />
       <manifest>
         <attribute name="Main-Class" value="${main-class}" />
       </manifest>
@@ -55,7 +54,7 @@
   </target>
 
   <target name="docs" description="Generate JavaDoc for the project">
-    <javadoc sourcepath="${src.java.dir}" destdir="${docs.dir}" />
+    <javadoc sourcepath="${src.main.java}" destdir="${docs.dir}" />
   </target>
 
   <target name="junit-compile" depends="compile" description="Compile JUnit Tests">
@@ -78,28 +77,21 @@
       </classpath>
       <formatter type="brief" usefile="false" />
       <batchtest>
-        <fileset dir="${src.test.dir}" includes="**/*Test.java" />
+        <fileset dir="${src.test.java}" includes="**/*Test.java" />
       </batchtest>
     </junit>
   </target>
 
   <target name="run-classes" depends="compile" description="Run the compiled Java Classes">
-    <java
-      fork="true"
-      classpath="${classes.dir}"
-      failonerror="yes"
-      dir="${classes.dir}"
-      classname="${main-class}" />
+    <java failonerror="yes" classname="${main-class}" >
+      <classpath>
+        <pathelement location="build/classes" />
+      </classpath>
+    </java>
   </target>
 
   <target name="run-jars" depends="jar" description="Run the compiled Java Jars">
-    <java
-      fork="true"
-      classname="${main-class}">
-      <classpath>
-        <path refid="classpath" />
-        <path location="${jars.dir}/${ant.project.name}.jar" />
-      </classpath>
+    <java jar="build/jars/java_project_001.jar" fork="true">
     </java>
   </target>
 </project>
