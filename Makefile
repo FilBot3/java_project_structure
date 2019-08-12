@@ -11,6 +11,7 @@ setup:
 	mkdir --parents build/classes
 	mkdir --parents build/classes/test
 	mkdir --parents build/jars
+	mkdir --parents docs
 
 clean:
 	rm -rf lib
@@ -60,3 +61,6 @@ generate-java-keytool:
 
 sign-jar:
 	jarsigner -keystore phil-keystore -storepass fake-store-pass -keypass fake-key-pass build/jars/java_project_001.jar key-alias-name
+
+docs:
+	javadoc -html5 -d docs -sourcepath src/main/java src/main/java/**/*.java
